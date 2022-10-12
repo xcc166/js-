@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <input type="text" />
+    <button id="btn">提交</button>
+    <script>
+      var btn = document.getElementById("btn");
+      btn.addEventListener("click", throttle(submit, 2000), false);
+      function submit(e) {
+        console.log(111);
+        console.log(e);
+        /* console.log(this); */
+      }
+      /* 防抖 */
+      function debance(fn, time) {
+        var timer = null;
+        return function () {
+          // 这个this指向button
+          /*  console.log(this); */
+          if (timer) {
+            clearTimeout(timer);
+          }
+          var firstClick = !timer;
+          if (firstClick) {
+            //使用apply将参数传过去
+            /* 这个this指向的就是外面这个函数的this */
+            fn.apply(this, arguments);
+          }
+          //箭头函数没有this指向和arguments会直接向外寻找
+          timer = setTimeout(() => {
+            timer = null;
+          }, time);
+        };
+      }
+
+      /* 节流 减少一段时间的触发频率 */
+
+      function throttle(fn, delay) {
+        var begin = 0;
+        return function () {
+          var cur = new Date().getTime();
+          /* 时间差大于给定的时间 大概每隔2000ms执行一次 */
+          if (cur - begin > delay) {
+            fn.apply(this, arguments);
+            begin = cur;
+          }
+        };
+      }
+    </script>
+  </body>
+</html>
